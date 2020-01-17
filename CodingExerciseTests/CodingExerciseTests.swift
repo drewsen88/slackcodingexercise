@@ -14,14 +14,15 @@ class CodingExerciseTests: XCTestCase {
     
     var systemUnderTest: AutocompleteViewController!
     var dataProvider: UserSearchResultDataProvider!
+    var autoCompleteViewModel: AutocompleteViewModel!
     
     override func setUp() {
         super.setUp()
         // Put setup code here. This method is called before the invocation of each test method in the class.
         dataProvider = UserSearchResultDataProvider(slackAPI: SlackApi.shared)
-        let viewModel = AutocompleteViewModel(dataProvider: dataProvider)
+        autoCompleteViewModel = AutocompleteViewModel(dataProvider: dataProvider)
         
-         systemUnderTest = AutocompleteViewController(viewModel: viewModel)
+         systemUnderTest = AutocompleteViewController(viewModel: autoCompleteViewModel)
         
 
     }
@@ -63,9 +64,13 @@ class CodingExerciseTests: XCTestCase {
     func testJSONMapping() {
         
         //fetch usernames beginning with t - should be non-empty
-        dataProvider.fetchUsers("t") { users in
-            XCTAssertFalse(users.isEmpty)
+        self.autoCompleteViewModel.fetchUserNames("t") { usernames in
+            DispatchQueue.main.async {
+                         XCTAssertNotNil(usernames, "should not be nil")
+          }
+            
         }
+
 
     }
 
